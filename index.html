@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Flabbergast Configuration Language by apmasell</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Flabbergast Configuration Language</h1>
+        <h2>Making configuration files less o_0</h2>
+        <a href="https://github.com/apmasell/flabbergast" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h3>
+<a id="configuration-of-applications-servers-and-containers" class="anchor" href="#configuration-of-applications-servers-and-containers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration of Applications, Servers, and Containers</h3>
+
+<p>Complicated applications, deployed on multiple servers, have complicated configurations. How do you describe the configuration of a single part of that system, and all the layers underneath, and get it right? Once you have that right, now make a testing environment, or migrate to a new cloud provider. To get a background in why configurations are getting complicated, watch <a href="https://www.usenix.org/conference/srecon15europe/program/presentation/masella">Configuration Pinocchio</a>, presented at SREcon15 Europe.</p>
+
+<p>Flabbergast makes this easier: it helps to describe configuration and it can handle the whole stack: from application to metal. Flabbergast provides a flexible template system to compose and recompose configurations and generate an output description, in an format you need. It happily nests systems together: the templates for an application and a container manager can be married with a minimum of fuss and “plumbing”, copying data from one place to another.</p>
+
+<h3>
+<a id="what-it-is-and-isnt" class="anchor" href="#what-it-is-and-isnt" aria-hidden="true"><span class="octicon octicon-link"></span></a>What it is and isn't</h3>
+
+<p>Flabbergast is two things: a programming language geared to generating configurations and a library of templates to help generate correct configurations before they are deployed. Unlike Chef or Puppet, Flabbergast doesn't deploy configurations; it's a system for describing configuration. A way to explain the state of the world to push out, through whatever means suit your application.</p>
+
+<p>As a language, Flabbergast is a little unusual. In most languages, it's your job as the programmer to move data around through parameters, arguments, fields, and closures. For configuration files, you don't want to have to shuttle information around, so Flabbergast does it for you. It uses contextual lookup to find information so you can define things where it makes sense and not worry about copying it to where it gets used.</p>
+
+<h3>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h3>
+
+<p>For a quick introduction, have a look at the <a href="https://docs.google.com/presentation/d/10YLdBBC0a2nIxbttvg0jg95rHXa3-UxwyA-ZwiDdq7E/edit?usp=sharing">primer slide deck</a>. To really get started, take a look at <a href="https://github.com/apmasell/flabbergast/blob/master/flabbergast-manual.md">the manual</a>. There are some <a href="https://github.com/apmasell/flabbergast/tree/master/examples">serious examples</a> and some fun <a href="https://github.com/apmasell/flabbergast/tree/master/rosettacode">Rosetta Code examples</a>.</p>
+
+<p>If you are on Ubuntu or Debian, it's a snap using a PPA. The most recent version is also posted to Maven Central. Follow the <a href="https://github.com/apmasell/flabbergast/blob/master/README.md#installation">installation instructions</a>.</p>
+
+<h3>
+<a id="comparison" class="anchor" href="#comparison" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparison</h3>
+
+<table>
+<thead>
+<tr>
+<th><em>Language</em></th>
+<th>Flabbergast</th>
+<th>Coil</th>
+<th>HOCON</th>
+<th>Jsonnet</th>
+<th>NixOS</th>
+<th>Pan</th>
+<th>Pystachio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Paradigm</em></td>
+<td>Functional</td>
+<td>Functional</td>
+<td>Imperative°</td>
+<td>Functional</td>
+<td>Functional</td>
+<td>Imperative</td>
+<td>Imperative</td>
+</tr>
+<tr>
+<td><em>Side-effect Free</em></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>Hybrid°</td>
+</tr>
+<tr>
+<td><em>Inheritance</em></td>
+<td>Prototype</td>
+<td>Prototype</td>
+<td>Prototype</td>
+<td>Prototype</td>
+<td>None</td>
+<td>Class-based</td>
+<td>Class-based</td>
+</tr>
+<tr>
+<td><em>Typing Strength</em></td>
+<td>Strong</td>
+<td>Weak</td>
+<td>Weak</td>
+<td>Strong</td>
+<td>Strong</td>
+<td>Strong</td>
+<td>Strong</td>
+</tr>
+<tr>
+<td><em>Typing Enforcement</em></td>
+<td>Dynamic</td>
+<td>Dynamic</td>
+<td>Dynamic</td>
+<td>Dynamic</td>
+<td>Dynamic</td>
+<td>Hybrid°</td>
+<td>Dynamic</td>
+</tr>
+<tr>
+<td><em>Schema Validation</em></td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>Assignment</td>
+<td>Request</td>
+</tr>
+<tr>
+<td><em>Turing Complete</em></td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><em>Scoping</em></td>
+<td>Dynamic</td>
+<td>Lexical</td>
+<td>Lexical</td>
+<td>Lexical</td>
+<td>Lexical</td>
+<td>Lexical</td>
+<td>Hybrid°</td>
+</tr>
+<tr>
+<td><em>Default Propagation</em></td>
+<td>Scope, inheritance</td>
+<td>Inheritance</td>
+<td>Inheritance</td>
+<td>Inheritance</td>
+<td>Operator</td>
+<td>Inheritance</td>
+<td>Inheritance</td>
+</tr>
+<tr>
+<td><em>Output Format</em></td>
+<td>Python objects</td>
+<td>Text, Custom</td>
+<td>Java, Python, or Ruby objects</td>
+<td>JSON</td>
+<td>Java objects</td>
+<td>JSON, XML</td>
+<td>Python objects</td>
+</tr>
+</tbody>
+</table>
+
+<p>° Depends on context. See SREcon15 Europe <a href="http://www.masella.name/%7Eandre/2015-srecon-andre_masella.pdf">Configuration Pinocchio</a> paper for details.</p>
+
+<h3>
+<a id="support-and-community" class="anchor" href="#support-and-community" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support and Community</h3>
+
+<p>We are on the Internet, and plan to stay there. You can try FreeNode IRC in <code>#flabbergast</code>, <a href="https://groups.google.com/forum/#!forum/flabbergast-users">Google Groups</a>, <a href="http://twitter.com/co_0nfig">Twitter</a>, <a href="https://plus.google.com/communities/103010827049942376743">Google+</a>, or <a href="https://apmasell/flabbergast">GitHub</a>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/apmasell/flabbergast/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/apmasell/flabbergast/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/apmasell/flabbergast"></a> is maintained by <a href="https://github.com/apmasell">apmasell</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
