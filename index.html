@@ -49,6 +49,71 @@
 
 <p>If you are on Ubuntu or Debian, it's a snap using a PPA. The most recent version is also posted to Maven Central. Follow the <a href="https://github.com/flabbergast-config/flabbergast/blob/master/README.md#installation">installation instructions</a>.</p>
 
+<p>Here's a small example for generating an Apache Aurora configuration.</p>
+
+<pre>
+<span class="def">aurora_lib</span> : <span class="keyword">From</span> lib:apache/aurora <span class="comment"># Import the Aurora library.</span>
+<span class="def">cluster</span> : <span class="str">"cluster1"</span>
+<span class="def">role</span> : <span class="str">"jrhacker"</span>
+<span class="def">resources</span> : {
+  <span class="def">cpu</span> : 0.1
+  <span class="def">ram</span> : 16Mi
+  <span class="def">disk</span> : 16Mi
+}
+<span class="def">hw_file</span> : aurora_lib.aurora_file { <span class="comment"># Create an Aurora configuration file</span>
+  <span class="def">jobs</span> : [
+    job { <span class="comment"># Create a job. This could also be <i>aurora_lib.job</i>, but we have nothing else named <i>job</i>.</span>
+      <span class="def">instances</span> : 1 <span class="comment"># One replica of this job should run.</span>
+      <span class="def">job_name</span> : <span class="str">"hello_world"</span> <span class="comment"># Provide a friendly job name.</span>
+      <span class="def">task</span> : aurora_lib.task {
+        <span class="def">processes</span> : { <span class="comment"># Define the processes ⋯</span>
+          <span class="def">hw</span> : process { <span class="comment"># ⋯ using process template</span>
+            <span class="def">process_name</span> : <span class="str">"hw"</span> <span class="comment"># The name of this process will be <i>hw</i></span>
+            <span class="def">command_line</span> : [ <span class="str">"echo hello world"</span> ] <span class="comment"># The command line we want to run.</span>
+          }
+        }
+      }
+    }
+  ]
+}
+<span class="def">value</span> : hw_file.value <span class="comment"># Flabbergast is going to dump this string to the output.</span>
+</pre>
+
+<p>One of the things that makes Flabbergast special is it uses contextual lookup, that allows you to define thing where they make sense for your needs, rather than what the original author imagined. So, you can write the above config as:</p>
+
+<pre>
+<span class="def">aurora_lib</span> : <span class="keyword">From</span> lib:apache/aurora
+<span class="def">cluster</span> : <span class="str">"cluster1"</span>
+<span class="def">role</span> : <span class="str">"jrhacker"</span>
+<span class="def">resources</span> : {
+  <span class="def">cpu</span> : 0.1
+  <span class="def">ram</span> : 16Mi
+  <span class="def">disk</span> : 8Mi
+}
+<span class="def">hw_file</span> : aurora_lib.aurora_file {
+  <span class="def">jobs</span> : [
+    job {
+      <span class="def">resources</span> : {
+        <span class="def">disk</span> : 16Mi <span class="comment">This disk resource will be used since it is “closer”.</span>
+      }
+      <span class="def">instances</span> : 1
+      <span class="def">job_name</span> : <span class="str">"hello_world"</span>
+      <span class="def">task</span> : aurora_lib.task {
+        <span class="def">processes</span> : {
+          <span class="def">hw</span> : process {
+            <span class="def">process_name</span> : <span class="str">"hw"</span>
+            <span class="def">command_line</span> : [ <span class="str">"echo hello world"</span> ]
+          }
+        }
+      }
+    }
+  ]
+}
+<span class="def">value</span> : hw_file.value
+</pre>
+
+<p>and get the same result. Flabbbergast's contextual lookup will find the “closest” match, so you can shuffle your definitions to share things that should be shared without having to copy variables around.</p>
+
 <h3>
 <a id="comparison" class="anchor" href="#comparison" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparison</h3>
 

@@ -879,3 +879,19 @@ footer a:hover {
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) { }
 
+pre .def {
+  font-weight: bold;
+}
+
+pre .comment {
+  color: #888;
+}
+
+pre .keyword {
+  color: #2879d0;
+	font-weight: bold;
+}
+
+pre .str {
+  color: #2879d0;
+}
